@@ -1,0 +1,196 @@
+{% extends 'adminApp/manager_base.html' %}
+
+{% block title %}Rooms | {{ hotel_name }} Manager Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Room Management</h2>
+        <a href="{% url 'adminApp:room_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i> Add New Room
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if not hotel %}
+        <div class="alert alert-warning">
+            <p>You don't have a hotel assigned to your account. Please contact an administrator.</p>
+        </div>
+    {% else %}
+        <!-- Room Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-primary bg-gradient text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="fs-4"><i class="bi bi-buildings"></i></div>
+                            <div class="ms-3">
+                                <h5 class="fw-bold mb-0">{{ total_rooms }}</h5>
+                                <div class="text-white-50">Total Rooms</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success bg-gradient text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="fs-4"><i class="bi bi-check-circle"></i></div>
+                            <div class="ms-3">
+                                <h5 class="fw-bold mb-0">{{ available_rooms }}</h5>
+                                <div class="text-white-50">Available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-danger bg-gradient text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="fs-4"><i class="bi bi-person-fill"></i></div>
+                            <div class="ms-3">
+                                <h5 class="fw-bold mb-0">{{ occupied_rooms }}</h5>
+                                <div class="text-white-50">Occupied</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning bg-gradient text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="fs-4"><i class="bi bi-tools"></i></div>
+                            <div class="ms-3">
+                                <h5 class="fw-bold mb-0">{{ maintenance_rooms }}</h5>
+                                <div class="text-white-50">Maintenance</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="status" class="form-label">Filter by Status</label>
+                        <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Statuses</option>
+                            <option value="available" {% if status_filter == 'available' %}selected{% endif %}>Available</option>
+                            <option value="occupied" {% if status_filter == 'occupied' %}selected{% endif %}>Occupied</option>
+                            <option value="maintenance" {% if status_filter == 'maintenance' %}selected{% endif %}>Under Maintenance</option>
+                            <option value="reserved" {% if status_filter == 'reserved' %}selected{% endif %}>Reserved</option>
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+                        <label for="search" class="form-label">Search Rooms</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="search" name="search" placeholder="Search by room number or type..." value="{{ search_query }}">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Rooms Table -->
+        <div class="card shadow">
+            <div class="card-body">
+                {% if rooms %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Room #</th>
+                                    <th>Type</th>
+                                    <th>Price/Night</th>
+                                    <th>Capacity</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for room in rooms %}
+                                <tr>
+                                    <td>{{ room.room_number }}</td>
+                                    <td>
+                                        <span class="badge text-bg-secondary">{{ room.get_room_type_display }}</span>
+                                    </td>
+                                    <td>${{ room.price_per_night }}</td>
+                                    <td>{{ room.capacity }} guests</td>
+                                    <td>
+                                        {% if room.status == 'available' %}
+                                            <span class="badge text-bg-success">Available</span>
+                                        {% elif room.status == 'occupied' %}
+                                            <span class="badge text-bg-danger">Occupied</span>
+                                        {% elif room.status == 'maintenance' %}
+                                            <span class="badge text-bg-warning">Maintenance</span>
+                                        {% elif room.status == 'reserved' %}
+                                            <span class="badge text-bg-primary">Reserved</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'adminApp:room_detail' room.id %}" class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'adminApp:room_edit' room.id %}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Edit Room">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'adminApp:room_delete' room.id %}" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete Room">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="display-1 text-muted mb-3">
+                            <i class="bi bi-buildings"></i>
+                        </div>
+                        <h3 class="text-muted mb-3">No rooms found</h3>
+                        <p class="text-muted mb-4">
+                            {% if search_query or status_filter %}
+                                No rooms match your search criteria. Try adjusting your filters.
+                            {% else %}
+                                You haven't added any rooms to your hotel yet.
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'adminApp:room_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i> Add Your First Room
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
+{% endblock %}

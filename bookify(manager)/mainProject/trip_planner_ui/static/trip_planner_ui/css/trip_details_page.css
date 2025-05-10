@@ -1,0 +1,35 @@
+/* Shared styles for flight_detail_page.html and hotel_detail_page.html */
+
+.card-header h2 {
+    font-size: 1.75rem;
+}
+
+.container mt-5 {
+    padding-bottom: 3rem; /* Add some padding at the bottom */
+}
+
+h4 {
+    color: #0056b3; /* A slightly darker blue for subheadings */
+    margin-top: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.price-details ul li strong,
+.check-in-out p strong {
+    min-width: 120px;
+    display: inline-block;
+}
+
+.badge.bg-secondary {
+    font-size: 0.85em;
+    padding: 0.4em 0.6em;
+}
+
+.room-types .card {
+    background-color: #f8f9fa;
+}
+
+/* Ensure Font Awesome icons are spaced nicely if used inline */
+.fas, .far {
+    margin-right: 0.3em;
+} 

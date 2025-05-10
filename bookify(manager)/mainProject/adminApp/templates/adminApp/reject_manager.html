@@ -1,0 +1,67 @@
+{% extends 'adminApp/admin_base.html' %}
+{% load static %}
+
+{% block title %}Reject Manager | Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 fw-bold">Reject Manager Application</h2>
+    <a href="{% url 'adminApp:pending_managers' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-2"></i> Back to List
+    </a>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Reject Hotel Manager Application</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-times-circle fa-4x text-danger mb-3"></i>
+                    <h4>You are about to reject this manager application</h4>
+                    <p class="text-muted">Please provide a reason for rejecting the application. This feedback will be sent to the applicant.</p>
+                </div>
+                
+                <div class="border rounded p-3 mb-4 bg-light">
+                    <h5 class="mb-3">Application Summary</h5>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Manager:</strong></div>
+                        <div class="col-md-8">{{ manager_profile.user.username }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Hotel Name:</strong></div>
+                        <div class="col-md-8">{{ manager_profile.hotel_name }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Location:</strong></div>
+                        <div class="col-md-8">{{ manager_profile.hotel_address }}</div>
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group mb-4">
+                        <label for="rejection_reason" class="form-label">Rejection Reason:</label>
+                        <textarea id="rejection_reason" name="rejection_reason" class="form-control" rows="4" placeholder="Please provide details about why this application is being rejected..." required></textarea>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-times me-2"></i> Confirm Rejection
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

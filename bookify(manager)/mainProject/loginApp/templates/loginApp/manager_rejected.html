@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manager Account Rejected | Bookify</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #121212;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      max-width: 600px;
+      width: 100%;
+    }
+    .card-header {
+      background-color: #d9534f; /* Bootstrap danger color */
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.5rem;
+      text-align: center;
+      padding: 1rem;
+    }
+    .card-body {
+      padding: 2rem;
+      text-align: center;
+    }
+    .fa-times-circle {
+      color: #d9534f;
+      margin-bottom: 1rem;
+    }
+    .alert-secondary {
+      background-color: #2a2a2a;
+      border-color: #444;
+      color: #cfcfcf;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+    h5 {
+      color: #c47a59;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .font-italic {
+      font-style: italic;
+      color: #d1b89d;
+    }
+    .btn-primary {
+      background-color: #c47a59;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      font-size: 1.1rem;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+    .btn-primary:hover {
+      background-color: #b06a4f;
+    }
+    .btn-secondary {
+      background-color: #444;
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem 1.5rem;
+      color: #fff;
+      font-weight: 600;
+      margin-right: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .btn-secondary:hover {
+      background-color: #5a5a5a;
+      color: #fff;
+    }
+    .mt-4 p {
+      margin-top: 1rem;
+      color: #ccc;
+    }
+    .d-grid {
+      margin-top: 1rem;
+    }
+    .me-2 {
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card shadow">
+    <div class="card-header">
+      Manager Account Rejected
+    </div>
+    <div class="card-body">
+      <i class="fas fa-times-circle fa-4x"></i>
+      <h4 class="mb-4">Your hotel manager account has been rejected</h4>
+
+      <div class="alert alert-secondary">
+        <h5>Reason for rejection:</h5>
+        <p class="font-italic">{{ rejection_reason }}</p>
+      </div>
+
+      <div class="d-grid gap-2">
+        <a href="{% url 'manager_reapply' %}" class="btn btn-primary btn-lg">
+          <i class="fas fa-edit me-2"></i> Edit My Application and Reapply
+        </a>
+      </div>
+      <p class="text-center mt-3">You can make changes to your hotel information and submit your application again.</p>
+
+      <div class="mt-4 text-center">
+        <p>If you need assistance, please contact our administrator at:</p>
+        <p><strong>Email:</strong> admin@bookify.com</p>
+      </div>
+
+      <div class="mt-4 text-center">
+        <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+        <a href="{% url 'home' %}" class="btn btn-primary">Return to Homepage</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- FontAwesome JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>

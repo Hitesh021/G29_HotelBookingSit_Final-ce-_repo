@@ -1,0 +1,239 @@
+{% extends 'adminApp/admin_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Approve Manager & Create Hotel | Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 fw-bold">Approve Manager & Create Hotel</h2>
+    <a href="{% url 'adminApp:pending_managers' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-2"></i> Back to List
+    </a>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Manager Application Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Manager Information</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <strong>Username:</strong> {{ manager_profile.user.username }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Email:</strong> {{ manager_profile.user.email|default:"Not provided" }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Application Date:</strong> {{ manager_profile.user.date_joined|date:"F d, Y" }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Contact Phone:</strong> {{ manager_profile.hotel_contact_phone }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Hotel Information (Provided by Manager)</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <strong>Hotel Name:</strong> {{ manager_profile.hotel_name }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Address:</strong> {{ manager_profile.hotel_address }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Description:</strong><br>
+                                    {{ manager_profile.hotel_description|default:"No description provided." }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Create Hotel in System</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    A hotel will be created with the information below. You can modify the details before approval.
+                </p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Basic Information -->
+                    <h5 class="mb-3">Basic Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">Hotel Name *</label>
+                                {{ form.name.errors }}
+                                {{ form.name|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.hotel_id.id_for_label }}" class="form-label">Hotel ID *</label>
+                                {{ form.hotel_id.errors }}
+                                {{ form.hotel_id|add_class:"form-control" }}
+                                <div class="text-muted small">{{ form.hotel_id.help_text }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.location.id_for_label }}" class="form-label">Location *</label>
+                                {{ form.location.errors }}
+                                {{ form.location|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.manager.id_for_label }}" class="form-label">Manager *</label>
+                                {{ form.manager.errors }}
+                                {{ form.manager|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description.errors }}
+                        {{ form.description|add_class:"form-control" }}
+                    </div>
+                    
+                    <!-- Address Information -->
+                    <h5 class="mb-3 mt-4">Address Information</h5>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.address_line.id_for_label }}" class="form-label">Address Line *</label>
+                                {{ form.address_line.errors }}
+                                {{ form.address_line|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.city_name.id_for_label }}" class="form-label">City *</label>
+                                {{ form.city_name.errors }}
+                                {{ form.city_name|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.country_code.id_for_label }}" class="form-label">Country Code *</label>
+                                {{ form.country_code.errors }}
+                                {{ form.country_code|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.postal_code.id_for_label }}" class="form-label">Postal Code</label>
+                                {{ form.postal_code.errors }}
+                                {{ form.postal_code|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.iata_code.id_for_label }}" class="form-label">IATA Code *</label>
+                                {{ form.iata_code.errors }}
+                                {{ form.iata_code|add_class:"form-control" }}
+                                <div class="text-muted small">3-letter code for the nearest airport or city (e.g., LAX, NYC, MIA)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hotel Details -->
+                    <h5 class="mb-3 mt-4">Hotel Details</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.rating.id_for_label }}" class="form-label">Rating (1-5)</label>
+                                {{ form.rating.errors }}
+                                {{ form.rating|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.price_per_night.id_for_label }}" class="form-label">Price Per Night *</label>
+                                {{ form.price_per_night.errors }}
+                                {{ form.price_per_night|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.available_rooms.id_for_label }}" class="form-label">Available Rooms *</label>
+                                {{ form.available_rooms.errors }}
+                                {{ form.available_rooms|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.image_url.id_for_label }}" class="form-label">Image URL</label>
+                                {{ form.image_url.errors }}
+                                {{ form.image_url|add_class:"form-control" }}
+                                <div class="text-muted small">{{ form.image_url.help_text }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="{{ form.status.id_for_label }}" class="form-label">Status *</label>
+                                {{ form.status.errors }}
+                                {{ form.status|add_class:"form-select" }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-circle me-2"></i> Approve Manager & Create Hotel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

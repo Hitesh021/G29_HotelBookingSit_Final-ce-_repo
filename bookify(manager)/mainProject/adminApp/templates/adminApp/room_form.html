@@ -1,0 +1,140 @@
+{% extends 'adminApp/manager_base.html' %}
+
+{% block title %}{{ title }} | {{ hotel_name }} Manager Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">{{ title }}</h2>
+        <a href="{% url 'adminApp:rooms' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i> Back to Rooms
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Room Information</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Room Identifier -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.room_number.id_for_label }}" class="form-label">Room Number *</label>
+                            {{ form.room_number.errors }}
+                            <input type="text" name="room_number" id="{{ form.room_number.id_for_label }}" class="form-control {% if form.room_number.errors %}is-invalid{% endif %}" value="{{ form.room_number.value|default:'' }}" required>
+                            {% if form.room_number.help_text %}
+                                <small class="form-text text-muted">{{ form.room_number.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.room_type.id_for_label }}" class="form-label">Room Type *</label>
+                            {{ form.room_type.errors }}
+                            <select name="room_type" id="{{ form.room_type.id_for_label }}" class="form-select {% if form.room_type.errors %}is-invalid{% endif %}" required>
+                                {% for value, text in form.fields.room_type.choices %}
+                                    <option value="{{ value }}" {% if form.room_type.value == value %}selected{% endif %}>{{ text }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.room_type.help_text %}
+                                <small class="form-text text-muted">{{ form.room_type.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Details -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="{{ form.price_per_night.id_for_label }}" class="form-label">Price Per Night ($) *</label>
+                            {{ form.price_per_night.errors }}
+                            <input type="number" name="price_per_night" id="{{ form.price_per_night.id_for_label }}" class="form-control {% if form.price_per_night.errors %}is-invalid{% endif %}" value="{{ form.price_per_night.value|default:'' }}" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="{{ form.capacity.id_for_label }}" class="form-label">Capacity (Guests) *</label>
+                            {{ form.capacity.errors }}
+                            <input type="number" name="capacity" id="{{ form.capacity.id_for_label }}" class="form-control {% if form.capacity.errors %}is-invalid{% endif %}" value="{{ form.capacity.value|default:'2' }}" min="1" max="10" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status *</label>
+                            {{ form.status.errors }}
+                            <select name="status" id="{{ form.status.id_for_label }}" class="form-select {% if form.status.errors %}is-invalid{% endif %}" required>
+                                {% for value, text in form.fields.status.choices %}
+                                    <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ text }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description and Features -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description.errors }}
+                            <textarea name="description" id="{{ form.description.id_for_label }}" class="form-control {% if form.description.errors %}is-invalid{% endif %}" rows="3">{{ form.description.value|default:'' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.amenities.id_for_label }}" class="form-label">Amenities</label>
+                            {{ form.amenities.errors }}
+                            <textarea name="amenities" id="{{ form.amenities.id_for_label }}" class="form-control {% if form.amenities.errors %}is-invalid{% endif %}" rows="2" placeholder="WiFi, TV, AC, Mini Bar, etc.">{{ form.amenities.value|default:'' }}</textarea>
+                            {% if form.amenities.help_text %}
+                                <small class="form-text text-muted">{{ form.amenities.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.image_url.id_for_label }}" class="form-label">Image URL</label>
+                            {{ form.image_url.errors }}
+                            <input type="url" name="image_url" id="{{ form.image_url.id_for_label }}" class="form-control {% if form.image_url.errors %}is-invalid{% endif %}" value="{{ form.image_url.value|default:'' }}" placeholder="https://example.com/room-image.jpg">
+                            {% if form.image_url.help_text %}
+                                <small class="form-text text-muted">{{ form.image_url.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a href="{% url 'adminApp:rooms' %}" class="btn btn-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-2"></i> {{ action }} Room
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

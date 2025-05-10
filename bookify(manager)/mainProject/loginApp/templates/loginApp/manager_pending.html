@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manager Account Pending | Bookify</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #121212;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      max-width: 600px;
+      width: 100%;
+    }
+    .card-header {
+      background-color: #c47a59;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.5rem;
+      text-align: center;
+      padding: 1rem;
+    }
+    .card-body {
+      padding: 2rem;
+      text-align: center;
+    }
+    .fa-clock {
+      color: #c47a59;
+      margin-bottom: 1rem;
+    }
+    .alert-info {
+      background-color: #2a2a2a;
+      border-color: #444;
+      color: #cfcfcf;
+      text-align: left;
+      margin-top: 1.5rem;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+    }
+    .btn-secondary {
+      background-color: #444;
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem 1.5rem;
+      color: #fff;
+      font-weight: 600;
+      margin-right: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .btn-secondary:hover {
+      background-color: #5a5a5a;
+      color: #fff;
+    }
+    .btn-primary {
+      background-color: #c47a59;
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem 1.5rem;
+      color: #fff;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #b06a4f;
+      color: #fff;
+    }
+    .btn-container {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card shadow">
+    <div class="card-header">
+      Manager Account Pending Approval
+    </div>
+    <div class="card-body">
+      <i class="fas fa-clock fa-4x"></i>
+      <h4 class="mb-4">Your hotel manager account is awaiting administrator approval</h4>
+
+      <div class="alert alert-info">
+        <p>Thank you for registering as a hotel manager. Your application is currently under review by our administrators.</p>
+        <p>Once your account has been reviewed, you will receive access to manage your hotel. This process typically takes 1-2 business days.</p>
+      </div>
+
+      <p>If you have any questions, please contact our administrator at:</p>
+      <p><strong>Email:</strong> admin@bookify.com</p>
+
+      <div class="btn-container">
+        <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+        <a href="{% url 'home' %}" class="btn btn-primary">Return to Homepage</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

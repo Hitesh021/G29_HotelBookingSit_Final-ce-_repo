@@ -1,0 +1,70 @@
+{% extends 'adminApp/admin_base.html' %}
+{% load static %}
+
+{% block title %}Pending Manager Applications | Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 fw-bold">Pending Manager Applications</h2>
+<p class="lead mb-4">Review and approve hotel manager applications</p>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Pending Applications</h5>
+        <span class="badge bg-warning text-dark">{{ pending_managers.count }} Pending</span>
+    </div>
+    <div class="card-body p-0">
+        {% if pending_managers %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Hotel Name</th>
+                        <th>Location</th>
+                        <th>Contact Phone</th>
+                        <th>Application Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for manager in pending_managers %}
+                    <tr>
+                        <td>{{ manager.user.username }}</td>
+                        <td>{{ manager.hotel_name }}</td>
+                        <td>{{ manager.hotel_address|truncatechars:30 }}</td>
+                        <td>{{ manager.hotel_contact_phone }}</td>
+                        <td>{{ manager.created_at|date:"F d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'adminApp:manager_details' manager.user.id %}" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="{% url 'adminApp:approve_manager' manager.user.id %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-check"></i> Approve
+                            </a>
+                            <a href="{% url 'adminApp:reject_manager' manager.user.id %}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-times"></i> Reject
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center p-5">
+            <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+            <h4>No pending manager applications</h4>
+            <p class="text-muted">All hotel manager applications have been processed.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

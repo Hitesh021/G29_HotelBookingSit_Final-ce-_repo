@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+{% load static %}
+{% load humanize %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flight Details - {{ flight_details.carrier|default:"Flight" }} - Bookify</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h2, h4 {
+      color: #c47a59;
+      font-weight: 700;
+    }
+    .btn-back-home {
+      background-color: #444;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 600;
+      padding: 0.5rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .btn-back-home:hover {
+      background-color: #666;
+      color: #fff;
+      text-decoration: none;
+    }
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      background-color: #1e1e1e;
+      color: #fff;
+    }
+    .card-header {
+      border-radius: 12px 12px 0 0;
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      color: #fff;
+      background-color: #c47a59;
+    }
+    .card-body {
+      padding: 1.5rem;
+      background-color: #fff;
+      color: #333;
+      border-radius: 0 0 12px 12px;
+    }
+    .fs-5 {
+      font-size: 1.25rem;
+    }
+    .badge.bg-primary {
+      background-color: #c47a59;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.4em 0.8em;
+      border-radius: 10px;
+    }
+    .text-muted {
+      color: #6c757d !important;
+    }
+    .policy-info p {
+      color: #555;
+    }
+    .btn-outline-secondary {
+      border-color: #444;
+      color: #444;
+      font-weight: 600;
+      border-radius: 10px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      background: #fff;
+      margin-right: 0.5rem;
+    }
+    .btn-outline-secondary:hover {
+      background-color: #444;
+      color: #fff;
+    }
+    .btn-success {
+      background-color: #c47a59;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      font-size: 1.1rem;
+      transition: background-color 0.3s ease;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    .btn-success:hover {
+      background-color: #a05d3f;
+      color: #fff;
+      text-decoration: none;
+    }
+    hr {
+      border-color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+
+    <a href="{% url 'home' %}" class="btn-back-home">
+      <i class="fas fa-home me-2"></i> Back to Home
+    </a>
+
+    {% if error %}
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+      <i class="fas fa-exclamation-circle me-2"></i>
+      <div>
+        <h4 class="alert-heading">Error!</h4>
+        <p>{{ error }}</p>
+        <hr>
+        <p class="mb-0">Could not retrieve flight details for ID: {{ flight_id }}. 
+          Please <a href="{% url 'trips:home' %}" class="alert-link">try a new search</a> or contact support.</p>
+      </div>
+    </div>
+    {% elif flight_details %}
+    <div class="card shadow-lg">
+      <div class="card-header">
+        <h2 class="mb-0"><i class="fas fa-plane-departure"></i> Flight Details: {{ flight_details.carrier }}</h2>
+      </div>
+      <div class="card-body">
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h4>Route</h4>
+            <p class="fs-5">
+              <strong>From:</strong> {{ flight_details.origin|upper }} 
+              {% if flight_details.departure_terminal %}(Terminal {{ flight_details.departure_terminal }}){% endif %}<br>
+              <strong>To:</strong> {{ flight_details.destination|upper }} 
+              {% if flight_details.arrival_terminal %}(Terminal {{ flight_details.arrival_terminal }}){% endif %}
+            </p>
+          </div>
+          <div class="col-md-6">
+            <h4>Aircraft &amp; Class</h4>
+            <p class="fs-5">
+              <strong>Aircraft:</strong> {{ flight_details.aircraft|default:"N/A" }}<br>
+              <strong>Fare Class:</strong> {{ flight_details.fare_class|default:"N/A" }}
+            </p>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h4>Timings</h4>
+            <p>
+              <strong>Outbound Departure:</strong> {{ flight_details.departure_datetime|default:"N/A"|slice:":16" }} (Duration: {{ flight_details.duration_outbound|default:"N/A" }})<br>
+              <strong>Outbound Arrival:</strong> {{ flight_details.arrival_datetime|default:"N/A"|slice:":16" }} <br>
+              <strong>Return Departure:</strong> {{ flight_details.return_departure_datetime|default:"N/A"|slice:":16" }} (Duration: {{ flight_details.duration_return|default:"N/A" }})<br>
+              <strong>Return Arrival:</strong> {{ flight_details.return_arrival_datetime|default:"N/A"|slice:":16" }}
+            </p>
+          </div>
+          <div class="col-md-6">
+            <h4>Services &amp; Baggage</h4>
+            <p>
+              <strong>In-flight Services:</strong> {{ flight_details.in_flight_services|join:", "|default:"N/A" }}<br>
+              <strong>Baggage Allowance:</strong> {{ flight_details.baggage_allowance|default:"N/A" }}
+            </p>
+          </div>
+        </div>
+
+        {% if flight_details.price_breakdown %}
+        <div class="price-details mb-4 p-3 bg-light border rounded">
+          <h4>Price Breakdown (per adult estimate)</h4>
+          <ul class="list-unstyled">
+            <li><strong>Base Fare:</strong> ${{ flight_details.price_breakdown.base_fare_per_adult|floatformat:2|intcomma|default:"0.00" }}</li>
+            <li><strong>Taxes &amp; Fees:</strong> ${{ flight_details.price_breakdown.taxes_and_fees_per_adult|floatformat:2|intcomma|default:"0.00" }}</li>
+            {% if flight_details.price_breakdown.dynamic_adult_surcharge %}
+            <li><strong>Adult Surcharge:</strong> ${{ flight_details.price_breakdown.dynamic_adult_surcharge|floatformat:2|intcomma }}</li>
+            {% endif %}
+            <li class="mt-2"><strong>Estimated Total Per Adult:</strong> 
+              ${{ flight_details.price|floatformat:2|intcomma|default:"N/A" }} 
+              <em>(Note: This price is from the search result, final detailed price might vary)</em>
+            </li>
+          </ul>
+        </div>
+        {% endif %}
+
+        {% if flight_details.policy %}
+        <div class="policy-info">
+          <h4>Policy Information</h4>
+          <p class="text-muted">{{ flight_details.policy|default:"No policy information available." }}</p>
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-4">
+          <a href="javascript:history.back()" class="btn btn-outline-secondary me-2">
+            <i class="fas fa-arrow-left"></i> Back to Results
+          </a>
+          <a href="#" class="btn btn-success">
+            <i class="fas fa-check-circle"></i> Book this Flight (Placeholder)
+          </a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning" role="alert">
+      <h4 class="alert-heading">Flight Details Not Available</h4>
+      <p>The requested flight details could not be loaded. This might be a temporary issue or the flight ID is invalid.</p>
+      <hr>
+      <p class="mb-0">Please try <a href="javascript:history.back()" class="alert-link">going back</a> or start a <a href="{% url 'trips:home' %}" class="alert-link">new search</a>.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- FontAwesome JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>

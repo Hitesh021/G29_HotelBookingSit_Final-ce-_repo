@@ -1,0 +1,28 @@
+/* Styles for cart_detail.html */
+
+.list-group-item h6 {
+    color: #0d6efd; /* Primary blue */
+    font-weight: bold;
+}
+
+.list-group-item .text-muted {
+    font-size: 0.9em;
+}
+
+.list-group-item i.fas {
+    width: 1.2em; /* Align icons */
+    text-align: center;
+}
+
+.card-footer strong {
+    color: #0d6efd;
+}
+
+/* Optional: Add some hover effect */
+.list-group-item:hover {
+    background-color: #f8f9fa; /* Light grey background on hover */
+}
+
+.btn-outline-danger:disabled {
+    cursor: not-allowed;
+} 

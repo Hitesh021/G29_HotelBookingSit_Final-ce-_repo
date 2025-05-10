@@ -1,0 +1,171 @@
+{% extends 'adminApp/manager_base.html' %}
+
+{% block title %}Manager Dashboard - {{ hotel_name }}{% endblock %}
+
+{% block content %}
+  {% if not hotel %}
+  <div style="padding: 20px;">
+    <div class="alert alert-warning">
+      <strong>Notice:</strong> Your hotel hasn't been fully configured in our system yet. 
+      Some functionality may be limited. Please contact admin for assistance.
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="dashboard-cards">
+    <div class="card">
+      <h3>Total Bookings</h3>
+      <p>{{ total_bookings }}</p>
+    </div>
+    <div class="card">
+      <h3>Today's Check-ins</h3>
+      <p>{{ todays_checkins }}</p>
+    </div>
+    <div class="card">
+      <h3>Room Occupancy</h3>
+      <p>{{ occupied_rooms }} Occupied / {{ vacant_rooms }} Vacant</p>
+    </div>
+    <div class="card">
+      <h3>Monthly Revenue</h3>
+      <p>${{ monthly_revenue|floatformat:2 }}</p>
+    </div>
+  </div>
+
+  <div class="dashboard-sections">
+    <div class="mini-section">
+      <h4>📈 Booking Trends</h4>
+      <canvas id="bookingsChart"></canvas>
+    </div>
+
+    <div class="mini-section">
+      <h4>🔧 Pending Service Requests</h4>
+      {% if support_requests %}
+      <ul>
+        {% for request in support_requests %}
+        <li>Room {{ request.room.room_number|default:"--" }}: {{ request.message|truncatechars:50 }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="no-data">No pending service requests</p>
+      {% endif %}
+
+      <h4 style="margin-top: 20px;">🗓️ Upcoming Check-ins</h4>
+      {% if upcoming_checkins %}
+      <ul>
+        {% for checkin in upcoming_checkins %}
+        <li>{{ checkin.user.username }} – {{ checkin.room.room_type|title|default:"Standard" }} – {{ checkin.check_in|date:"g:i A" }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="no-data">No upcoming check-ins</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .dashboard-cards, .dashboard-sections {
+    padding: 30px;
+    display: grid;
+    gap: 20px;
+  }
+
+  .dashboard-cards {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .dashboard-sections {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .card {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border-left: 6px solid #cb8670;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .card h3 {
+    color: #cb8670;
+    font-size: 15px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .card p {
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  .mini-section {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  }
+
+  .mini-section h4 {
+    color: #cb8670;
+    margin-bottom: 16px;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 6px;
+  }
+
+  .mini-section ul {
+    list-style: none;
+  }
+
+  .mini-section ul li {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #444;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 250px !important;
+  }
+  
+  .no-data {
+    color: #888;
+    font-style: italic;
+    text-align: center;
+    padding: 15px 0;
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('bookingsChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        label: 'Bookings',
+        data: JSON.parse('{{ booking_trend_data|safe }}'),
+        borderColor: '#cb8670',
+        backgroundColor: 'rgba(203, 134, 112, 0.2)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+{% endblock %}
